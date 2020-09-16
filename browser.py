@@ -1,10 +1,10 @@
-import struct
+from __future__ import absolute_import
 from enigma import eConsoleAppContainer
-from Components.VolumeControl import VolumeControl
-import datasocket
+from . import datasocket
+
 
 class Browser:
-    def __init__(self, urlcallback = None):
+    def __init__(self, urlcallback=None):
         self.onBroadcastPlay = []
         self.onBroadcastStop = []
         self.onExit = []
@@ -32,12 +32,6 @@ class Browser:
         elif cmd == 2:
             for x in self.onBroadcastStop:
                 x()
-        elif cmd == 3:
-            VolumeControl.instance and VolumeControl.instance.volMute()
-        elif cmd == 4:
-            VolumeControl.instance and VolumeControl.instance.volDown()
-        elif cmd == 5:
-            VolumeControl.instance and VolumeControl.instance.volUp()
         elif cmd == 6:
             for x in self.onExit:
                 x()

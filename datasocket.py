@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-import os
-import struct
 from twisted.internet.protocol import ServerFactory, Protocol
+import os, struct
 
 browserclients = []
 onCommandReceived = []
 onBrowserClosed = []
 
+
 class ClientConnection(Protocol):
     magic = 987654321
-    data = ''
+    data = b''
     headerformat = '!III'
     headersize = struct.calcsize(headerformat)
     datasize = 0
@@ -47,6 +47,7 @@ class ClientConnection(Protocol):
             for x in onBrowserClosed:
                 x()
 
+
 class CommandServer:
     def __init__(self):
         from twisted.internet import reactor
@@ -63,7 +64,7 @@ class CommandServer:
         for client in browserclients:
             client.transport.loseConnection()
 
-    def sendCommand(self, cmd, data = ''):
+    def sendCommand(self, cmd, data=''):
         global browserclients
         for client in browserclients:
             client.transport.write(struct.pack('!III', client.magic, cmd, len(data)))

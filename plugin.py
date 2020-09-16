@@ -1,32 +1,11 @@
+from __future__ import absolute_import
 from Plugins.Plugin import PluginDescriptor
-from Components.PluginComponent import plugins
 from Screens.Screen import Screen
-from Screens.VirtualKeyBoard import VirtualKeyBoard
-from Components.ActionMap import ActionMap, NumberActionMap, HelpableActionMap
-from GlobalActions import globalActionMap
-from Components.Label import Label, MultiColorLabel
-from Components.Button import Button
-from Components.MenuList import MenuList
-from Components.ConfigList import ConfigListScreen
-from Components.config import config, ConfigSubsection, ConfigPosition, getConfigListEntry, ConfigBoolean, ConfigInteger, ConfigText, ConfigSelection, configfile
-from Components.Sources.StaticText import StaticText
-from Components.Task import Task
-from enigma import eTimer, eServiceReference, iPlayableService, iServiceInformation, getDesktop, eRCInput, eServiceCenter, fbClass
-from Components.ServiceEventTracker import ServiceEventTracker
-from Screens.ChoiceBox import ChoiceBox
-from Screens.InputBox import InputBox
-from Screens.MessageBox import MessageBox
 from Screens.InfoBar import InfoBar
-from Screens.InfoBarGenerics import InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarTeletextPlugin, InfoBarRedButton
-from Screens.ChannelSelection import service_types_tv
-from Screens.LocationBox import MovieLocationBox
-import re, os, sys, socket, time
-from Tools.Directories import fileExists, copyfile, pathExists, createDir
-from Components.ServicePosition import ServicePosition
-from Components.VolumeControl import VolumeControl
-import urllib
-import urllib2
-from hbbtv import HbbTVWindow
+from Components.ServiceEventTracker import ServiceEventTracker
+from enigma import iPlayableService, iServiceInformation
+from .hbbtv import HbbTVWindow
+
 
 class HBBTVParser(Screen):
     def __init__(self, session):
@@ -46,12 +25,10 @@ class HBBTVParser(Screen):
     def onHBBTVActivation(self):
         service = self.session.nav.getCurrentService()
         info = service and service.info()
-        url  = info and info.getInfoString(iServiceInformation.sHBBTVUrl) or False
+        url = info and info.getInfoString(iServiceInformation.sHBBTVUrl) or False
         onid = info and info.getInfo(iServiceInformation.sONID) or -1
         tsid = info and info.getInfo(iServiceInformation.sTSID) or -1
-        sid  = info and info.getInfo(iServiceInformation.sSID) or -1
-
-        print 'URL %s ONID %d TSID %d SID %d' % (url, onid, tsid, sid)
+        sid = info and info.getInfo(iServiceInformation.sSID) or -1
 
         self.openUrl = url
         if not self.openUrl:
@@ -59,10 +36,11 @@ class HBBTVParser(Screen):
             return
         self.session.open(HbbTVWindow, self.openUrl, onid, tsid, sid)
 
+
 def autostart(reason, **kwargs):
-    global globalinstance
     if 'session' in kwargs:
         HBBTVParser(kwargs['session'])
+
 
 def Plugins(**kwargs):
     return PluginDescriptor(where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart)
