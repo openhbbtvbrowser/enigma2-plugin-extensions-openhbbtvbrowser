@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from twisted.internet.protocol import ServerFactory, Protocol
-import os, struct
+import os
+import struct
 
 browserclients = []
 onCommandReceived = []
